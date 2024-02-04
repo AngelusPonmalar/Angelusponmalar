@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Shopping Survey</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        
+        #survey-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #feedbackContainer {
+            margin-top: 20px;
+        }
+
+        #feedbackContainer div {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="feedbackContainer"></div>
+
+    <div id="survey-form">
+        <h2>Online Shopping Survey</h2>
+        <form id="surveyForm">
+            <label for="likeOnlineShopping">Do you like online shopping?</label>
+            <select id="likeOnlineShopping" name="likeOnlineShopping" required>
+                <option value="">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <label for="reasonNotLike">If not, why do you not like it?</label>
+            <textarea id="reasonNotLike" name="reasonNotLike" rows="4"></textarea>
+
+            <label for="improveQuality">How can we increase the quality of online shopping?</label>
+            <textarea id="improveQuality" name="improveQuality" rows="4"></textarea>
+
+            <label for="difficulties">What difficulties do you face during online shopping?</label>
+            <textarea id="difficulties" name="difficulties" rows="4"></textarea>
+
+            <label for="impactOnBusiness">Are small businesses and traditional businesses affected by online shopping?</label>
+            <select id="impactOnBusiness" name="impactOnBusiness" required>
+                <option value="">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <button type="button" onclick="submitSurvey()">Submit</button>
+        </form>
+
+        <div id="responseMessage"></div>
+    </div>
+
+    <script>
+        function submitSurvey() {
+            // Get form data
+            var formData = {
+                likeOnlineShopping: document.getElementById('likeOnlineShopping').value,
+                reasonNotLike: document.getElementById('reasonNotLike').value,
+                improveQuality: document.getElementById('improveQuality').value,
+                difficulties: document.getElementById('difficulties').value,
+                impactOnBusiness: document.getElementById('impactOnBusiness').value,
+            };
+
+            // Save response to local storage
+            var responses = JSON.parse(localStorage.getItem('surveyResponses')) || [];
+            responses.push(formData);
+            localStorage.setItem('surveyResponses', JSON.stringify(responses));
+
+            // Show response message
+            document.getElementById('responseMessage').innerHTML = 'Your response is submitted!';
+
+            // Refresh feedback view
+            viewFeedback();
+        }
+
+        function viewFeedback() {
+            // Retrieve responses from local storage
+            var responses = JSON.parse(localStorage.getItem('surveyResponses')) || [];
+
+            // Display feedback
+            var feedbackContainer = document.getElementById('feedbackContainer');
+            feedbackContainer.innerHTML = '';
+
+            if (responses.length > 0) {
+                responses.forEach(function (response, index) {
+                    var feedbackItem = document.createElement('div');
+                    feedbackItem.innerHTML = '<strong>Response ' + (index + 1) + ':</strong><br>' +
+                        'Like Online Shopping: ' + response.likeOnlineShopping + '<br>' +
+                        'Reason Not Like: ' + response.reasonNotLike + '<br>' +
+                        'Improve Quality: ' + response.improveQuality + '<br>' +
+                        'Difficulties: ' + response.difficulties + '<br>' +
+                        'Impact On Business: ' + response.impactOnBusiness + '<br><br>';
+                    feedbackContainer.appendChild(feedbackItem);
+                });
+            } else {
+                feedbackContainer.innerHTML = 'No feedback available.';
+            }
+        }
+
+        // Display existing feedback on page load
+        window.onload = function () {
+            viewFeedback();
+        };
+    </script>
+</body>
+</html>
